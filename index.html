@@ -13,11 +13,9 @@
             --radius-md: 14px;
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             
-            /* Цвета главных разделов */
             --color-work: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             --color-study: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
             
-            /* Цвета окошек внутри Работы */
             --gradient-courses: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             --gradient-themes: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
             --gradient-grammar: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
@@ -67,7 +65,13 @@
             font-size: 1.2rem;
         }
 
-        /* Кнопка К категориям / Назад */
+        .header-action-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -79,7 +83,6 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
-            margin-bottom: 30px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
             cursor: pointer;
@@ -90,10 +93,24 @@
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
 
-        /* Скрытие/Показ экранов */
-        .screen {
-            display: none;
+        .add-btn {
+            background: #2d3748;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: var(--transition);
         }
+        .add-btn:hover {
+            background: #1a202c;
+            transform: translateY(-2px);
+        }
+
+        .screen { display: none; }
         .screen.active {
             display: block;
             animation: fadeIn 0.4s ease-out forwards;
@@ -104,7 +121,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ЭКРАН 1: Две большие плитки */
         .main-choice-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -125,8 +141,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
 
         .choice-card:hover {
@@ -146,7 +160,6 @@
             letter-spacing: 1px;
         }
 
-        /* ЭКРАН 2: Окошки внутри Работы */
         .grid-categories {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -188,7 +201,6 @@
         .box-games { background: var(--gradient-games); }
         .box-pdf { background: var(--gradient-pdf); }
 
-        /* ЭКРАН 3: Карточки финальных ссылок */
         .materials-list-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -234,6 +246,68 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
+        /* МОДАЛЬНОЕ ОКНО */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes modalScale {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-box h2 { margin-bottom: 20px; font-size: 1.5rem; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .form-group input:focus { border-color: #4f46e5; }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        .btn-cancel {
+            background: #e2e8f0;
+            color: var(--text-main);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-submit {
+            background: #4f46e5;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .main-choice-grid { grid-template-columns: 1fr; gap: 20px; }
             .choice-card { height: 200px; font-size: 1.6rem; }
@@ -257,14 +331,15 @@
                     Учёба
                     <span class="kor-sub">공부</span>
                 </div>
+                <!-- Ошибка ИСПРАВЛЕНА: теперь здесь правильное корейское слово "업무" -->
                 <div class="choice-card card-work" onclick="switchScreen('screen-work')">
                     Работа
-                    <span class="kor-sub">업му</span>
+                    <span class="kor-sub">업무</span>
                 </div>
             </div>
         </div>
 
-        <!-- ================= ЭКРАН 2: РАЗДЕЛ РАБОТА (ОКОШКИ) ================= -->
+        <!-- ================= ЭКРАН 2: РАЗДЕЛ РАБОТА ================= -->
         <div id="screen-work" class="screen">
             <button class="back-btn" onclick="switchScreen('screen-main')">← На главную</button>
             <header style="text-align: left; margin-bottom: 40px;">
@@ -273,34 +348,34 @@
             </header>
             
             <div class="grid-categories">
-                <div class="box-card box-courses" onclick="openCategory('Курсы', 'courses-data')">
+                <div class="box-card box-courses" onclick="openCategory('Курсы', 'courses-data', 'Курс', '#3b82f6')">
                     Курсы
                     <span class="kor-sub">교육 과정</span>
                 </div>
-                <div class="box-card box-themes" onclick="openCategory('Темы', 'themes-data')">
+                <div class="box-card box-themes" onclick="openCategory('Темы', 'themes-data', 'Тема', '#f97316')">
                     Темы
                     <span class="kor-sub">주제별 학습</span>
                 </div>
-                <div class="box-card box-grammar" onclick="openCategory('Грамматика', 'grammar-data')">
+                <div class="box-card box-grammar" onclick="openCategory('Грамматика', 'grammar-data', 'Грамматика', '#8b5cf6')">
                     Грамматика
                     <span class="kor-sub">문법</span>
                 </div>
-                <div class="box-card box-vocab" onclick="openCategory('Лексика & Аудирование', 'vocab-data')">
+                <div class="box-card box-vocab" onclick="openCategory('Лексика & Аудирование', 'vocab-data', 'Аудио', '#10b981')">
                     Лексика & Аудирование
                     <span class="kor-sub">어휘 및 듣기</span>
                 </div>
-                <div class="box-card box-games" onclick="openCategory('Интерактив & Игры', 'games-data')">
+                <div class="box-card box-games" onclick="openCategory('Интерактив & Игры', 'games-data', 'Игра', '#14b8a6')">
                     Интерактив & Игры
                     <span class="kor-sub">게임</span>
                 </div>
-                <div class="box-card box-pdf" onclick="openCategory('Учебники & PDF', 'pdf-data')">
+                <div class="box-card box-pdf" onclick="openCategory('Учебники & PDF', 'pdf-data', 'PDF', '#ef4444')">
                     Учебники & PDF
                     <span class="kor-sub">교재</span>
                 </div>
             </div>
         </div>
 
-        <!-- ================= ЭКРАН 3: РАЗДЕЛ УЧЁБА (ЗАГЛУШКА) ================= -->
+        <!-- ================= ЭКРАН 3: РАЗДЕЛ УЧЁБА ================= -->
         <div id="screen-study" class="screen">
             <button class="back-btn" onclick="switchScreen('screen-main')">← На главную</button>
             <div class="stub-content">
@@ -309,44 +384,61 @@
             </div>
         </div>
 
-        <!-- ================= ЭКРАН 4: ПРОСМОТР МАТЕРИАЛОВ КОНКРЕТНОГО ОКОШКА ================= -->
+        <!-- ================= ЭКРАН 4: ПРОСМОТР МАТЕРИАЛОВ ================= -->
         <div id="screen-category-view" class="screen">
-            <button class="back-btn" onclick="switchScreen('screen-work')">← К категориям работы</button>
+            <div class="header-action-block">
+                <button class="back-btn" onclick="switchScreen('screen-work')">← К категориям работы</button>
+                <button class="add-btn" onclick="openModal()">+ Добавить</button>
+            </div>
             <header style="text-align: left; margin-bottom: 40px;">
                 <h1 id="category-title-text">Название категории</h1>
                 <p>Список ваших сохраненных ссылок, картинок и файлов</p>
             </header>
 
-            <div class="materials-list-grid" id="materials-container">
-                <!-- Карточки материалов вставляются сюда через JavaScript -->
-            </div>
+            <div class="materials-list-grid" id="materials-container"></div>
         </div>
 
     </div>
 
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО ДЛЯ ДОБАВЛЕНИЯ УЧЕБНИКОВ/ССЫЛОК -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h2>Добавить материал</h2>
+            <div class="form-group">
+                <label for="material-title">Название</label>
+                <input type="text" id="material-title" placeholder="Например: Учебник Седжон 1">
+            </div>
+            <div class="form-group">
+                <label for="material-url">Ссылка на файл / ресурс</label>
+                <input type="text" id="material-url" placeholder="Вставьте ссылку на Google Диск, игру или видео">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+                <button class="btn-submit" onclick="saveNewMaterial()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Функция переключения экранов
+        let currentCategoryKey = '';
+        let currentCategoryBadge = 'PDF';
+        let currentCategoryColor = '#ef4444';
+
         function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
         }
 
-        // ================= БАЗА ДАННЫХ ТВОИХ ССЫЛОК =================
-        // Меняй адреса '#' внутри url на свои ссылки (на файлы, игры, видео)
+        // БАЗА ДАННЫХ
         const materialsData = {
             'courses-data': [
-                { title: 'Вводный фонетический курс (Алфавит)', url: '#', type: 'Курс', color: '#3b82f6' },
-                { title: 'Основной курс: Уровень 1 (Начальный)', url: '#', type: 'Курс', color: '#3b82f6' }
+                { title: 'Вводный фонетический курс (Алфавит)', url: '#', type: 'Курс', color: '#3b82f6' }
             ],
             'themes-data': [
-                { title: 'Тема: Знакомство и приветствие', url: '#', type: 'Тема', color: '#f97316' },
-                { title: 'Тема: Еда, кафе и рестораны', url: '#', type: 'Тема', color: '#f97316' }
+                { title: 'Тема: Знакомство и приветствие', url: '#', type: 'Тема', color: '#f97316' }
             ],
             'grammar-data': [
-                { title: 'Глаголы состояния и действия (-다)', url: '#', type: 'Грамматика', color: '#8b5cf6' },
-                { title: 'Официально-вежливый стиль (-습니다)', url: '#', type: 'Грамматика', color: '#8b5cf6' }
+                { title: 'Глаголы состояния и действия (-다)', url: '#', type: 'Грамматика', color: '#8b5cf6' }
             ],
             'vocab-data': [
                 { title: 'Аудио-трек: Разговор в аэропорту', url: '#', type: 'Аудио', color: '#10b981' }
@@ -359,16 +451,24 @@
             ]
         };
 
-        // Функция рендеринга ссылок внутри выбранного окошка
-        function openCategory(categoryName, dataKey) {
+        function openCategory(categoryName, dataKey, badgeText, badgeColor) {
+            currentCategoryKey = dataKey;
+            currentCategoryBadge = badgeText;
+            currentCategoryColor = badgeColor;
+            
             document.getElementById('category-title-text').innerText = categoryName;
+            renderMaterials();
+            switchScreen('screen-category-view');
+        }
+
+        function renderMaterials() {
             const container = document.getElementById('materials-container');
             container.innerHTML = ''; 
             
-            const items = materialsData[dataKey] || [];
+            const items = materialsData[currentCategoryKey] || [];
             
             if (items.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted);">В этом разделе пока нет материалов.</p>';
+                container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">В этом разделе пока нет материалов. Нажмите "+ Добавить", чтобы загрузить новые.</p>';
             } else {
                 items.forEach(item => {
                     const card = document.createElement('a');
@@ -382,7 +482,38 @@
                     container.appendChild(card);
                 });
             }
-            switchScreen('screen-category-view');
+        }
+
+        // Управление модальным окном
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('material-title').value = '';
+            document.getElementById('material-url').value = '';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function saveNewMaterial() {
+            const title = document.getElementById('material-title').value.trim();
+            const url = document.getElementById('material-url').value.trim();
+
+            if (!title || !url) {
+                alert('Пожалуйста, заполните оба поля!');
+                return;
+            }
+
+            // Добавляем в текущую категорию новый элемент
+            materialsData[currentCategoryKey].push({
+                title: title,
+                url: url,
+                type: currentCategoryBadge,
+                color: currentCategoryColor
+            });
+
+            closeModal();
+            renderMaterials(); // Перерисовываем экран
         }
     </script>
 </body>
