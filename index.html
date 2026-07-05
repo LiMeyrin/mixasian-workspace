@@ -290,7 +290,8 @@
         };
 
         function loadStoredMaterials() {
-            const localData = localStorage.getItem('my_materials_hub_v2');
+            // Новое имя ключа, чтобы стереть старые ошибки
+            const localData = localStorage.getItem('hub_local_storage_clean');
             if(localData) { materialsData = JSON.parse(localData); }
         }
 
@@ -355,8 +356,7 @@
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const fileDataUrl = e.target.result; // Локальная виртуальная ссылка на файл
-                    addCardToList(title, fileDataUrl);
+                    addCardToList(title, e.target.result);
                     closeModal();
                 };
                 reader.readAsDataURL(file);
@@ -370,7 +370,7 @@
                 type: currentCategoryBadge,
                 color: currentCategoryColor
             });
-            localStorage.setItem('my_materials_hub_v2', JSON.stringify(materialsData));
+            localStorage.setItem('hub_local_storage_clean', JSON.stringify(materialsData));
             renderMaterials();
         }
     </script>
