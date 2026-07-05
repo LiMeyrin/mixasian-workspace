@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рабочее пространство | Преподавание корейского языка</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --accent-blue: #4a90e2;
+            --accent-orange: #e67e22;
+            --accent-green: #2ecc71;
+            --accent-purple: #9b59b6;
+            --accent-red: #e74c3c;
+            --accent-teal: #1abc9c;
+            --radius: 14px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .category-section {
+            margin-bottom: 45px;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2d3748;
+        }
+
+        .category-title span.kor {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .material-card {
+            display: block;
+            position: relative;
+            height: 190px;
+            border-radius: var(--radius);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            text-decoration: none;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Плейсхолдеры градиентов для карточек */
+        .card-p1 { background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-p2 { background-image: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .card-p3 { background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .card-p4 { background-image: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%); }
+        .card-p5 { background-image: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+        .card-p6 { background-image: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+
+        .material-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.1) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .card-overlay h3 {
+            color: #ffffff;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .badge {
+            align-self: flex-start;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-course { background-color: var(--accent-blue); }
+        .badge-theme { background-color: var(--accent-orange); }
+        .badge-grammar { background-color: var(--accent-purple); }
+        .badge-vocab { background-color: var(--accent-green); }
+        .badge-game { background-color: var(--accent-teal); }
+        .badge-pdf { background-color: var(--accent-red); }
+
+        @media (max-width: 768px) {
+            body { padding: 20px 15px; }
+            header h1 { font-size: 1.8rem; }
+            .cards-grid {
+                gap: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            .material-card { height: 170px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Рабочее пространство преподавателя</h1>
+            <p>Все учебные материалы, курсы и интерактивные игры в одном месте</p>
+        </header>
+
+        <main>
+            <!-- 1. КУРСЫ -->
+            <section class="category-section">
+                <div class="category-title">
+                    <h2>Курсы</h2>
+                    <span class="kor">교육 과정</span>
+                </div>
+                <div class="cards-grid">
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p1">
+                        <div class="card-overlay">
+                            <h3>Вводный фонетический курс (Алфавит)</h3>
+                            <span class="badge badge-course">Курс</span>
+                        </div>
+                    </a>
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p2">
+                        <div class="card-overlay">
+                            <h3>Основной курс: Уровень 1 (Начальный)</h3>
+                            <span class="badge badge-course">Курс</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 2. ТЕМЫ -->
+            <section class="category-section">
+                <div class="category-title">
+                    <h2>Темы</h2>
+                    <span class="kor">주제별 학습</span>
+                </div>
+                <div class="cards-grid">
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p3">
+                        <div class="card-overlay">
+                            <h3>Тема: Знакомство и приветствие</h3>
+                            <span class="badge badge-theme">Тема</span>
+                        </div>
+                    </a>
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p4">
+                        <div class="card-overlay">
+                            <h3>Тема: Еда, кафе и рестораны</h3>
+                            <span class="badge badge-theme">Тема</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 3. ГРАММАТИКА -->
+            <section class="category-section">
+                <div class="category-title">
+                    <h2>Грамматика</h2>
+                    <span class="kor">문법</span>
+                </div>
+                <div class="cards-grid">
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p5">
+                        <div class="card-overlay">
+                            <h3>Глаголы состояния и действия (-다)</h3>
+                            <span class="badge badge-grammar">Грамматика</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 4. ЛЕКСИКА & АУДИРОВАНИЕ -->
+            <section class="category-section">
+                <div class="category-title">
+                    <h2>Лексика & Аудирование</h2>
+                    <span class="kor">어휘 및 듣기</span>
+                </div>
+                <div class="cards-grid">
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p1">
+                        <div class="card-overlay">
+                            <h3>Аудио-трек: Разговор в аэропорту</h3>
+                            <span class="badge badge-vocab">Аудио</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 5. ИНТЕРАКТИВ & ИГРЫ -->
+            <section class="category-section">
+                <div class="category-title">
+                    <h2>Интерактив & Игры</h2>
+                    <span class="kor">게임 및 인터랙тив</span>
+                </div>
+                <div class="cards-grid">
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p3">
+                        <div class="card-overlay">
+                            <h3>Игра: Сборка слогов из букв</h3>
+                            <span class="badge badge-game">Игра</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. УЧЕБНИКИ & PDF -->
+            <section class="category-section">
+                <div class="category-title">
+                    <h2>Учебники & PDF</h2>
+                    <span class="kor">교재 및 PDF</span>
+                </div>
+                <div class="cards-grid">
+                    <a href="СЫЛЛКА_НА_МАТЕРИАЛ" target="_blank" class="material-card card-p5">
+                        <div class="card-overlay">
+                            <h3>Основной учебник (Седжон 1)</h3>
+                            <span class="badge badge-pdf">PDF</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>
