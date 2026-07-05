@@ -126,6 +126,7 @@
             background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--radius-md);
             padding: 20px; text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 1.1rem;
             transition: var(--transition); box-shadow: 0 2px 5px rgba(0,0,0,0.02); height: 130px;
+            cursor: pointer;
         }
         .material-item-card:hover { transform: translateY(-3px); border-color: #cbd5e0; box-shadow: 0 6px 15px rgba(0,0,0,0.06); }
         .material-badge { display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; color: #ffffff; text-transform: uppercase; align-self: flex-start; }
@@ -144,10 +145,15 @@
         .btn-cancel { background: #e2e8f0; color: var(--text-main); border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; }
         .btn-submit { background: #4f46e5; color: #ffffff; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; }
 
-        @media (max-width: 768px) {
-            .main-choice-grid { grid-template-columns: 1fr; gap: 20px; }
-            .choice-card { height: 200px; font-size: 1.6rem; }
-        }
+        /* ОКНО ВСТРОЕННОГО ПРОСМОТРА (READER) */
+        .reader-overlay { position: fixed; inset: 0; background: rgba(26, 32, 44, 0.95); display: none; flex-direction: column; z-index: 2000; padding: 10px; animation: fadeIn 0.3s ease; }
+        .reader-overlay.active { display: flex; }
+        .reader-header { display: flex; justify-content: space-between; align-items: center; color: #ffffff; padding: 10px 20px; }
+        .reader-title { font-size: 1.2rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+        .reader-close-btn { background: #ef4444; color: #ffffff; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .reader-close-btn:hover { background: #b91c1c; transform: scale(1.05); }
+        .reader-body { flex-grow: 1; width: 100%; border-radius: 12px; overflow: hidden; background: #ffffff; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .reader-iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
@@ -233,36 +239,35 @@
 
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО -->
+    <!-- МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ -->
     <div class="modal-overlay" id="modal">
         <div class="modal-box">
             <h2>Добавить материал</h2>
-            <div class="form-group">
-                <label>Тип добавления</label>
-                <select id="upload-type" onchange="toggleUploadFields()">
-                    <option value="url">Интернет-ссылка</option>
-                    <option value="file">Загрузить файл со своего устройства</option>
-                </select>
-            </div>
             <div class="form-group">
                 <label for="material-title">Название карточки</label>
                 <input type="text" id="material-title" placeholder="Например: Учебник Седжон 1">
             </div>
             
-            <div class="form-group" id="field-url">
-                <label for="material-url">Ссылка на ресурс</label>
+            <div class="form-group">
+                <label for="material-url">Ссылка на ресурс (или файл с Гугл-Диска)</label>
                 <input type="text" id="material-url" placeholder="https://...">
-            </div>
-
-            <div class="form-group" id="field-file" style="display: none;">
-                <label for="material-file">Выберите файл</label>
-                <input type="file" id="material-file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
             </div>
 
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closeModal()">Отмена</button>
                 <button class="btn-submit" id="submit-btn" onclick="saveNewMaterial()">Сохранить</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ВСТРОЕННОГО РИДЕРА (ПРОСМОТР PDF И ССЫЛОК) -->
+    <div class="reader-overlay" id="reader-modal">
+        <div class="reader-header">
+            <div class="reader-title" id="reader-title-text">Просмотр материала</div>
+            <button class="reader-close-btn" onclick="closeReader()">Закрыть книгу ✕</button>
+        </div>
+        <div class="reader-body">
+            <iframe class="reader-iframe" id="reader-frame" src=""></iframe>
         </div>
     </div>
 
@@ -281,12 +286,12 @@
         }
 
         let materialsData = {
-            'courses-data': [{ title: 'Вводный фонетический курс', url: '#', type: 'Курс', color: '#3b82f6' }],
-            'themes-data': [{ title: 'Тема: Знакомство и приветствие', url: '#', type: 'Тема', color: '#f97316' }],
-            'grammar-data': [{ title: 'Глаголы состояния и действия (-다)', url: '#', type: 'Грамматика', color: '#8b5cf6' }],
-            'vocab-data': [{ title: 'Аудио-трек: В аэропорту', url: '#', type: 'Аудио', color: '#10b981' }],
-            'games-data': [{ title: 'Игра: Сборка слогов (Wordwall)', url: '#', type: 'Игра', color: '#14b8a6' }],
-            'pdf-data': [{ title: 'Основной учебник (Седжон 1)', url: '#', type: 'PDF', color: '#ef4444' }]
+            'courses-data': [{ title: 'Вводный фонетический курс', url: 'https://example.com', type: 'Курс', color: '#3b82f6' }],
+            'themes-data': [{ title: 'Тема: Знакомство и приветствие', url: 'https://example.com', type: 'Тема', color: '#f97316' }],
+            'grammar-data': [{ title: 'Глаголы состояния и действия (-다)', url: 'https://example.com', type: 'Грамматика', color: '#8b5cf6' }],
+            'vocab-data': [{ title: 'Аудио-трек: В аэропорту', url: 'https://example.com', type: 'Аудио', color: '#10b981' }],
+            'games-data': [{ title: 'Игра: Сборка слогов (Wordwall)', url: 'https://example.com', type: 'Игра', color: '#14b8a6' }],
+            'pdf-data': [{ title: 'Основной учебник (Седжон 1)', url: 'https://example.com', type: 'PDF', color: '#ef4444' }]
         };
 
         function loadStoredMaterials() {
@@ -294,7 +299,7 @@
                 const localData = localStorage.getItem('hub_v3_clean_data');
                 if(localData) { materialsData = JSON.parse(localData); }
             } catch(e) {
-                console.log("Ошибка загрузки локальной базы, используем дефолт");
+                console.log("Ошибка загрузки локальной базы");
             }
         }
 
@@ -319,13 +324,11 @@
             if (items.length === 0) {
                 container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Здесь пока пусто.</p>';
             } else {
-                items.forEach(item => {
-                    const card = document.createElement('a');
-                    card.href = item.url || '#';
-                    card.download = item.title;
-                    card.target = '_blank';
+                items.forEach((item, index) => {
+                    const card = document.createElement('div');
                     card.className = 'material-item-card';
-                    card.innerHTML = `<div>${item.title}</div><span class="material-badge" style="background-color: ${item.color || '#ef4444'}">${item.type || 'Файл'}</span>`;
+                    card.onclick = () => openInReader(item.title, item.url);
+                    card.innerHTML = `<div>${item.title}</div><span class="material-badge" style="background-color: ${item.color || '#ef4444'}">${item.type || 'Материал'}</span>`;
                     container.appendChild(card);
                 });
             }
@@ -335,43 +338,22 @@
             document.getElementById('modal').classList.add('active');
             document.getElementById('material-title').value = '';
             document.getElementById('material-url').value = '';
-            document.getElementById('material-file').value = '';
         }
 
         function closeModal() { document.getElementById('modal').classList.remove('active'); }
 
-        function toggleUploadFields() {
-            const type = document.getElementById('upload-type').value;
-            document.getElementById('field-url').style.display = type === 'url' ? 'block' : 'none';
-            document.getElementById('field-file').style.display = type === 'file' ? 'block' : 'none';
-        }
-
         function saveNewMaterial() {
             const title = document.getElementById('material-title').value.trim();
-            const mode = document.getElementById('upload-type').value;
+            let url = document.getElementById('material-url').value.trim();
 
             if (!title) { alert('Введите название карточки!'); return; }
+            if (!url) { alert('Вставьте ссылку!'); return; }
 
-            if (mode === 'url') {
-                const url = document.getElementById('material-url').value.trim();
-                if(!url) { alert('Вставьте ссылку!'); return; }
-                addCardToList(title, url);
-                closeModal();
-            } else {
-                const fileInput = document.getElementById('material-file');
-                if(fileInput.files.length === 0) { alert('Выберите файл на устройстве!'); return; }
-                const file = fileInput.files[0];
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    addCardToList(title, e.target.result);
-                    closeModal();
-                };
-                reader.readAsDataURL(file);
+            // Магическое преобразование ссылок Google Drive в чистый Reader-формат
+            if (url.includes('drive.google.com')) {
+                url = convertGoogleDriveLink(url);
             }
-        }
 
-        function addCardToList(title, targetUrl) {
             try {
                 if (!materialsData[currentCategoryKey]) {
                     materialsData[currentCategoryKey] = [];
@@ -379,18 +361,46 @@
                 
                 materialsData[currentCategoryKey].push({
                     title: title,
-                    url: targetUrl,
+                    url: url,
                     type: currentCategoryBadge,
                     color: currentCategoryColor
                 });
                 
                 localStorage.setItem('hub_v3_clean_data', JSON.stringify(materialsData));
                 renderMaterials();
+                closeModal();
             } catch (error) {
-                // Если память забита, всё равно выводим на экран без записи в память браузера
-                renderMaterials();
-                alert('Карточка создана на экране! (Локальная память браузера переполнена, файл не сохранится после перезагрузки страницы)');
+                alert('Не удалось сохранить в память браузера.');
             }
+        }
+
+        function convertGoogleDriveLink(sharedUrl) {
+            try {
+                // Ищем уникальный ID файла внутри ссылки гугл-диска
+                const parts = sharedUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                if (parts && parts[1]) {
+                    // Генерируем ссылку на чистый превью-ридер без лишних кнопок Гугла
+                    return `https://drive.google.com/file/d/${parts[1]}/preview`;
+                }
+                return sharedUrl;
+            } catch (e) {
+                return sharedUrl;
+            }
+        }
+
+        function openInReader(title, url) {
+            if (url === '#' || url === 'https://example.com') {
+                alert('Это демонстрационная карточка. Пожалуйста, добавьте свою ссылку.');
+                return;
+            }
+            document.getElementById('reader-title-text').innerText = title;
+            document.getElementById('reader-frame').src = url;
+            document.getElementById('reader-modal').classList.add('active');
+        }
+
+        function closeReader() {
+            document.getElementById('reader-modal').classList.remove('active');
+            document.getElementById('reader-frame').src = '';
         }
     </script>
 </body>
