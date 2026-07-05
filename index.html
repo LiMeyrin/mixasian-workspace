@@ -290,9 +290,12 @@
         };
 
         function loadStoredMaterials() {
-            // Новое имя ключа, чтобы стереть старые ошибки
-            const localData = localStorage.getItem('hub_local_storage_clean');
-            if(localData) { materialsData = JSON.parse(localData); }
+            try {
+                const localData = localStorage.getItem('hub_v3_clean_data');
+                if(localData) { materialsData = JSON.parse(localData); }
+            } catch(e) {
+                console.log("Ошибка загрузки локальной базы, используем дефолт");
+            }
         }
 
         function openCategory(categoryName, dataKey, badgeText, badgeColor) {
@@ -307,17 +310,22 @@
         function renderMaterials() {
             const container = document.getElementById('materials-container');
             container.innerHTML = ''; 
-            const items = materialsData[currentCategoryKey] || [];
+            
+            if (!materialsData[currentCategoryKey]) {
+                materialsData[currentCategoryKey] = [];
+            }
+            
+            const items = materialsData[currentCategoryKey];
             if (items.length === 0) {
                 container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Здесь пока пусто.</p>';
             } else {
                 items.forEach(item => {
                     const card = document.createElement('a');
-                    card.href = item.url;
+                    card.href = item.url || '#';
                     card.download = item.title;
                     card.target = '_blank';
                     card.className = 'material-item-card';
-                    card.innerHTML = `<div>${item.title}</div><span class="material-badge" style="background-color: ${item.color}">${item.type}</span>`;
+                    card.innerHTML = `<div>${item.title}</div><span class="material-badge" style="background-color: ${item.color || '#ef4444'}">${item.type || 'Файл'}</span>`;
                     container.appendChild(card);
                 });
             }
@@ -364,14 +372,25 @@
         }
 
         function addCardToList(title, targetUrl) {
-            materialsData[currentCategoryKey].push({
-                title: title,
-                url: targetUrl,
-                type: currentCategoryBadge,
-                color: currentCategoryColor
-            });
-            localStorage.setItem('hub_local_storage_clean', JSON.stringify(materialsData));
-            renderMaterials();
+            try {
+                if (!materialsData[currentCategoryKey]) {
+                    materialsData[currentCategoryKey] = [];
+                }
+                
+                materialsData[currentCategoryKey].push({
+                    title: title,
+                    url: targetUrl,
+                    type: currentCategoryBadge,
+                    color: currentCategoryColor
+                });
+                
+                localStorage.setItem('hub_v3_clean_data', JSON.stringify(materialsData));
+                renderMaterials();
+            } catch (error) {
+                // Если память забита, всё равно выводим на экран без записи в память браузера
+                renderMaterials();
+                alert('Карточка создана на экране! (Локальная память браузера переполнена, файл не сохранится после перезагрузки страницы)');
+            }
         }
     </script>
 </body>
